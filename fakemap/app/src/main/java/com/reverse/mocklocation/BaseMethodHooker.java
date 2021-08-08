@@ -1,5 +1,7 @@
 package com.reverse.mocklocation;
 
+import android.util.Log;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XSharedPreferences;
 
@@ -8,6 +10,7 @@ import de.robv.android.xposed.XSharedPreferences;
  */
 
 public abstract class BaseMethodHooker extends XC_MethodHook {
+    protected String TAG = "BaseMethodHooker";
     protected XSharedPreferences mPreferences;
     protected ClassLoader mClassLoader;
     protected String mParamString;
@@ -26,6 +29,7 @@ public abstract class BaseMethodHooker extends XC_MethodHook {
     protected abstract void afterCall(XC_MethodHook.MethodHookParam param);
 
     protected void afterHookedMethod(XC_MethodHook.MethodHookParam param) {
+        Log.i(TAG, "afterHookedMethod: " + this.getClass().getSimpleName());
         afterCall(param);
     }
 

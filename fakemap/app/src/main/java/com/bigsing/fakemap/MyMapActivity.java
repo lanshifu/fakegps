@@ -46,7 +46,6 @@ import com.bigsing.fakemap.utils.ThemeColor;
 import com.bigsing.fakemap.utils.ThemeUtils;
 import com.bigsing.fakemap.utils.Utils;
 import com.google.android.material.navigation.NavigationView;
-import com.tencent.bugly.beta.Beta;
 
 
 import java.util.ArrayList;
@@ -350,10 +349,10 @@ public class MyMapActivity extends BaseActivity {
                 switch (menuItem.getItemId()) {
                     case R.id.nav_menu_check:
                         /***** 检查更新 *****/
-                        Beta.strToastYourAreTheLatestVersion = getString(R.string.versionislatest);
-                        Beta.strToastCheckUpgradeError = getString(R.string.checkingupgradefailed);
-                        Beta.strToastCheckingUpgrade = getString(R.string.checkingupgrade);
-                        Beta.checkUpgrade();
+//                        Beta.strToastYourAreTheLatestVersion = getString(R.string.versionislatest);
+//                        Beta.strToastCheckUpgradeError = getString(R.string.checkingupgradefailed);
+//                        Beta.strToastCheckingUpgrade = getString(R.string.checkingupgrade);
+//                        Beta.checkUpgrade();
                         break;
                     case R.id.nav_menu_recommend:
                     case R.id.nav_menu_help:

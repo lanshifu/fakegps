@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 
-import com.tencent.bugly.Bugly;
 
 import java.io.File;
 import java.io.FileInputStream;

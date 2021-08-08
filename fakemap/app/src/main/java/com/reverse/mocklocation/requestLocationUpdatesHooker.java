@@ -27,7 +27,11 @@ public class requestLocationUpdatesHooker extends BaseMethodHooker {
 
     @Override
     public void hook() {
-        XposedHelpers.findAndHookMethod(LocationManager.class, "requestLocationUpdates", new Object[]{XposedHelpers.findClass("android.location.LocationRequest", this.mClassLoader), LocationListener.class, Looper.class, PendingIntent.class, this});
+        try {
+            XposedHelpers.findAndHookMethod(LocationManager.class, "requestLocationUpdates", new Object[]{XposedHelpers.findClass("android.location.LocationRequest", this.mClassLoader), LocationListener.class, Looper.class, PendingIntent.class, this});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

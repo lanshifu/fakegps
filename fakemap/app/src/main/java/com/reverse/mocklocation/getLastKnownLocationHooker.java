@@ -2,6 +2,7 @@ package com.reverse.mocklocation;
 
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.Log;
 
 import com.baidu.mapapi.model.LatLng;
 
@@ -31,8 +32,9 @@ public class getLastKnownLocationHooker extends BaseMethodHooker {
     @Override
     protected void afterCall(MethodHookParam paramMethodHookParam) {
         XposedBridge.log("LM:gbp return GPS_PROVIDER directly: " + this.mParamString);
-        LatLng latLng = LocationMocker.getLatLng();
-        Location location = LocationMocker.makeLocation(latLng.latitude, latLng.longitude);
+        double[] latLng = LocationMocker.getLocation();
+        Location location = LocationMocker.makeLocation(latLng[0], latLng[1]);
+        Log.i(TAG, "getLastKnownLocationHooker,afterCall: latitude 2,getLatitude=" + location.getLatitude() + ","+location.getLongitude());
         paramMethodHookParam.setResult(location);
     }
 }

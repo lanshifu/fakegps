@@ -58,6 +58,7 @@ public class BaiduMapFragment extends Fragment implements MyMapActivity.SearchAn
     private Context mContent;
     private AppCompatActivity mActivity;
     private String mLastCity;
+    private String TAG = "BaiduMapFragment";
 
     public BaiduMapFragment() {
     }
@@ -147,6 +148,7 @@ public class BaiduMapFragment extends Fragment implements MyMapActivity.SearchAn
     private void initData() {
         requestLocationPermission();
         autoPositionToCurrentPosition();//自动定位到手机所在位置
+        Log.i(TAG, "initData: ");
     }
 
 
@@ -166,7 +168,8 @@ public class BaiduMapFragment extends Fragment implements MyMapActivity.SearchAn
         SharedPreferences preferences = MyApp.getSharedPreferences();
         String latitude = preferences.getString("baidulatitude", "");
         String longitude = preferences.getString("baidulongitude", "");
-        if (TextUtils.isEmpty(latitude) || TextUtils.isEmpty(longitude)) {
+        if (true) {
+//        if (TextUtils.isEmpty(latitude) || TextUtils.isEmpty(longitude)) {
             //自动定位
             mLocationClient.registerLocationListener(myListener);    //注册监听函数
             mLocationClient.start();
@@ -238,6 +241,7 @@ public class BaiduMapFragment extends Fragment implements MyMapActivity.SearchAn
     class MyLocationListener implements BDLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
+            Log.i(TAG, "onReceiveLocation: " + location.getLatitude() + ","+location.getLongitude());
             if (location == null) {
                 Toast.makeText(mContent, "获取位置信息失败", Toast.LENGTH_LONG).show();
                 return;
@@ -250,7 +254,8 @@ public class BaiduMapFragment extends Fragment implements MyMapActivity.SearchAn
             mBaiduMap.setMyLocationData(locData);
             // 开始移动百度地图的定位地点到中心位置
             LatLng ll = new LatLng(location.getLatitude(), location.getLongitude());
-            MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(ll, 16.0f);
+            Log.i(TAG, "LatLng: " + ll.toString());
+            MapStatusUpdate u = MapStatusUpdateFactory.newLatLngZoom(new LatLng(23.135377, 113.386963), 16.0f);
             mBaiduMap.animateMapStatus(u);
             //定位成功后关闭定位
             mLocationClient.stop();

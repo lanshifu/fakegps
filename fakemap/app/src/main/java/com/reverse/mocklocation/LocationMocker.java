@@ -8,6 +8,7 @@ import android.os.SystemClock;
 import android.telephony.CellLocation;
 import android.telephony.TelephonyManager;
 import android.telephony.gsm.GsmCellLocation;
+import android.util.Log;
 
 import com.baidu.mapapi.model.LatLng;
 import com.bigsing.fakemap.Constant;
@@ -29,6 +30,7 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 public class LocationMocker {
     private static LocationMocker mInstance;
     private ArrayList<BaseMethodHooker> mHookers;
+    private String TAG = "LocationMocker";
 
     public synchronized static LocationMocker getInstance() {
         if (mInstance == null) {
@@ -53,16 +55,25 @@ public class LocationMocker {
         //读取配置坐标位置
         //SharedPreferences preferences = MyApp.getSharedPreferences();
         XSharedPreferences preferences = new XSharedPreferences(Constant.PACKAGE_THIS, Constant.TAG);
-        String s1 = preferences.getString("latitude", "30.213583");
-        String s2 = preferences.getString("longitude", "120.165784");
+//        String s1 = preferences.getString("latitude", "30.213583");
+//        String s2 = preferences.getString("longitude", "120.165784");
+        //12601256.200000001,2631450.58
+        String s1 = "12601256.200000001";
+        String s2 = "2631450.58";
         LatLng latLng = new LatLng(Double.parseDouble(s1), Double.parseDouble(s2));
         XposedBridge.log("read XSharedPreferences latitude:" + latLng.latitude + " longitude: " + latLng.longitude);
         return latLng;
     }
 
+    public static double[] getLocation(){
+        double s1 = 12601256.200000001;
+        double s2 = 2631450.58;
+        return new double[]{s1,s2};
+    }
+
     public void init(XSharedPreferences preferences, ClassLoader classLoader) {
         mHookers = new ArrayList<>();
-        mHookers.add(new requestLocationUpdatesHooker(preferences, classLoader, "requestLocationUpdatesHooker"));
+//        mHookers.add(new requestLocationUpdatesHooker(preferences, classLoader, "requestLocationUpdatesHooker"));
         mHookers.add(new getGpsStatusHooker(preferences, classLoader, "getGpsStatusHooker"));
         if (Build.VERSION.SDK_INT < 24) {
             mHookers.add(new addGpsStatusListenerHooker(preferences, classLoader, "addGpsStatusListenerHooker"));
@@ -78,8 +89,13 @@ public class LocationMocker {
 
     public void hook(ClassLoader classLoader) {
         for (BaseMethodHooker hooker : mHookers) {
-            hooker.hook();
+            try {
+                hooker.hook();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
+        Log.i(TAG, "hook: ");
 
 
 //        findAndHookMethod("android.net.NetworkInfo", classLoader, "getType", new Object[] { new n(this) });
@@ -148,12 +164,14 @@ public class LocationMocker {
         findAndHookMethod("android.location.Location", classLoader, "getLatitude", new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+                Log.i(TAG, "replaceHookedMethod,latitude=" + LocationMocker.getLatLng().latitude);
                 return LocationMocker.getLatLng().latitude;
             }
         });
         findAndHookMethod("android.location.Location", classLoader, "getLongitude", new XC_MethodReplacement() {
             @Override
             protected Object replaceHookedMethod(MethodHookParam param) throws Throwable {
+                Log.i(TAG, "replaceHookedMethod,longitude=" + LocationMocker.getLatLng().longitude);
                 return LocationMocker.getLatLng().longitude;
             }
         });
@@ -168,9 +186,9 @@ public class LocationMocker {
                 param.setResult(new ArrayList());
             }
         });
-        findAndHookMethod("android.net.wifi.WifiInfo", classLoader, "getMacAddress", XC_MethodReplacement.returnConstant("00-00-00-00-00-00-00-E0"));
-        findAndHookMethod("android.net.wifi.WifiInfo", classLoader, "getSSID", XC_MethodReplacement.returnConstant("null"));
-        findAndHookMethod("android.net.wifi.WifiInfo", classLoader, "getBSSID", XC_MethodReplacement.returnConstant("00:00:00:00:00:00"));
+//        findAndHookMethod("android.net.wifi.WifiInfo", classLoader, "getMacAddress", XC_MethodReplacement.returnConstant("00-00-00-00-00-00-00-E0"));
+//        findAndHookMethod("android.net.wifi.WifiInfo", classLoader, "getSSID", XC_MethodReplacement.returnConstant("null"));
+//        findAndHookMethod("android.net.wifi.WifiInfo", classLoader, "getBSSID", XC_MethodReplacement.returnConstant("00:00:00:00:00:00"));
         findAndHookMethod("android.telephony.TelephonyManager", classLoader, "getNetworkType", XC_MethodReplacement.returnConstant(TelephonyManager.NETWORK_TYPE_GPRS));
         findAndHookMethod("android.telephony.TelephonyManager", classLoader, "getPhoneType", XC_MethodReplacement.returnConstant(TelephonyManager.PHONE_TYPE_NONE));
         findAndHookMethod("android.telephony.TelephonyManager", classLoader, "getCurrentPhoneType", XC_MethodReplacement.returnConstant(TelephonyManager.PHONE_TYPE_NONE));

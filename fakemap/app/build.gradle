@@ -14,6 +14,13 @@ android {
             keyPassword 'qwe123'
         }
 
+        debug {
+            storeFile file("../../sign.jks")
+            storePassword 'qwe123'
+            keyAlias 'key0'
+            keyPassword 'qwe123'
+        }
+
     }
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
@@ -86,6 +93,6 @@ dependencies {
     implementation 'com.amap.api:search:latest.integration'
     //谷歌地图
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
-    implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
+//    implementation 'com.tencent.bugly:crashreport_upgrade:latest.release'
 }
 
